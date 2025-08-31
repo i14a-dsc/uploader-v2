@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>アップロード - Uploader</title>
+    <link rel="stylesheet" href="/css/main.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="app-container">
+      <header class="header">
+        <div class="header-content">
+          <h1 class="app-title">アップロード</h1>
+          <nav class="nav">
+            <a href="/" class="nav-item">
+              <span class="material-icons">home</span>
+              <span>ホーム</span>
+            </a>
+            <a href="/upload" class="nav-item active">
+              <span class="material-icons">cloud_upload</span>
+              <span>アップロード</span>
+            </a>
+            <a href="/files" class="nav-item">
+              <span class="material-icons">folder</span>
+              <span>ファイル</span>
+            </a>
+          </nav>
+          <div class="header-actions">
+            <button class="theme-toggle" id="themeToggle" title="テーマを切り替え">
+              <span class="material-icons">dark_mode</span>
+            </button>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+              <span class="material-icons">menu</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+          <h2>メニュー</h2>
+          <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <nav class="mobile-menu-nav">
+          <a href="/" class="nav-item">
+            <span class="material-icons">home</span>
+            <span>ホーム</span>
+          </a>
+          <a href="/upload" class="nav-item active">
+            <span class="material-icons">cloud_upload</span>
+            <span>アップロード</span>
+          </a>
+          <a href="/files" class="nav-item">
+            <span class="material-icons">folder</span>
+            <span>ファイル</span>
+          </a>
+        </nav>
+      </div>
+
+      <main class="main-content">
+        <div class="upload-container">
+          <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-content">
+              <div class="drop-zone-icon">
+                <span class="material-icons">cloud_upload</span>
+              </div>
+              <h3>ファイルをドラッグ&ドロップ</h3>
+              <p>または、下のボタンからファイルを選択してください</p>
+              <div class="upload-buttons">
+                <div class="file-type-buttons">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    class="file-input"
+                    multiple
+                    style="display: none"
+                  />
+                  <label for="fileInput" class="btn btn-primary">
+                    <span class="material-icons">folder_open</span>
+                    ファイルを選択
+                  </label>
+
+                  <input
+                    type="file"
+                    id="imageInput"
+                    class="file-input"
+                    accept="image/*"
+                    multiple
+                    style="display: none"
+                  />
+                  <label for="imageInput" class="btn btn-secondary">
+                    <span class="material-icons">image</span>
+                    画像
+                  </label>
+
+                  <input
+                    type="file"
+                    id="videoInput"
+                    class="file-input"
+                    accept="video/*"
+                    multiple
+                    style="display: none"
+                  />
+                  <label for="videoInput" class="btn btn-secondary">
+                    <span class="material-icons">videocam</span>
+                    動画
+                  </label>
+
+                  <input
+                    type="file"
+                    id="audioInput"
+                    class="file-input"
+                    accept="audio/*"
+                    multiple
+                    style="display: none"
+                  />
+                  <label for="audioInput" class="btn btn-secondary">
+                    <span class="material-icons">audiotrack</span>
+                    音楽
+                  </label>
+
+                  <input
+                    type="file"
+                    id="documentInput"
+                    class="file-input"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+                    multiple
+                    style="display: none"
+                  />
+                  <label for="documentInput" class="btn btn-secondary">
+                    <span class="material-icons">description</span>
+                    ドキュメント
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="upload-progress" id="uploadProgress" style="display: none">
+            <div class="progress-header">
+              <h4>アップロード中...</h4>
+              <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="progress-text" id="progressText">ファイルをアップロードしています...</p>
+          </div>
+
+          <div class="uploaded-files" id="uploadedFiles" style="display: none">
+            <h3>アップロード完了</h3>
+            <div class="file-list" id="fileList"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="popup-overlay" id="fileNamePopup">
+      <div class="popup">
+        <div class="popup-header">
+          <h3>ファイル名</h3>
+          <button class="popup-close" onclick="closeFileNamePopup()">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <div class="popup-content">
+          <p id="fullFileName"></p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const dropZone = document.getElementById('dropZone');
+      const fileInputs = {
+        any: document.getElementById('fileInput'),
+        image: document.getElementById('imageInput'),
+        video: document.getElementById('videoInput'),
+        audio: document.getElementById('audioInput'),
+        document: document.getElementById('documentInput'),
+      };
+      const uploadProgress = document.getElementById('uploadProgress');
+      const progressFill = document.getElementById('progressFill');
+      const progressPercentage = document.getElementById('progressPercentage');
+      const progressText = document.getElementById('progressText');
+      const uploadedFiles = document.getElementById('uploadedFiles');
+      const fileList = document.getElementById('fileList');
+      const themeToggle = document.getElementById('themeToggle');
+      const fileNamePopup = document.getElementById('fileNamePopup');
+      const fullFileName = document.getElementById('fullFileName');
+
+      let currentTheme = 'auto';
+
+      function initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'auto';
+        setTheme(savedTheme);
+        updateThemeToggleIcon();
+      }
+
+      function setTheme(theme) {
+        currentTheme = theme;
+        localStorage.setItem('theme', theme);
+
+        if (theme === 'auto') {
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', theme);
+        }
+      }
+
+      function updateThemeToggleIcon() {
+        const icon = themeToggle.querySelector('.material-icons');
+        if (currentTheme === 'dark') {
+          icon.textContent = 'light_mode';
+        } else if (currentTheme === 'light') {
+          icon.textContent = 'dark_mode';
+        } else {
+          icon.textContent = 'brightness_auto';
+        }
+      }
+
+      function toggleTheme() {
+        if (currentTheme === 'auto') {
+          setTheme('light');
+        } else if (currentTheme === 'light') {
+          setTheme('dark');
+        } else {
+          setTheme('auto');
+        }
+        updateThemeToggleIcon();
+      }
+
+      function showFileNamePopup(fileName) {
+        fullFileName.textContent = fileName;
+        fileNamePopup.classList.add('show');
+      }
+
+      function closeFileNamePopup() {
+        fileNamePopup.classList.remove('show');
+      }
+
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+      });
+
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+      });
+
+      dropZone.addEventListener('drop', handleDrop, false);
+      Object.values(fileInputs).forEach(input => {
+        if (input) {
+          input.addEventListener('change', handleFiles);
+        }
+      });
+      themeToggle.addEventListener('click', toggleTheme);
+
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (currentTheme === 'auto') {
+          setTheme('auto');
+        }
+      });
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      function highlight(e) {
+        dropZone.classList.add('drag-over');
+      }
+
+      function unhighlight(e) {
+        dropZone.classList.remove('drag-over');
+      }
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles({ target: { files } });
+      }
+
+      function handleFiles(e) {
+        const files = e.target.files;
+        if (files.length > 0) {
+          uploadFiles(files);
+          e.target.value = '';
+        }
+      }
+
+      function uploadFiles(files) {
+        const formData = new FormData();
+        Array.from(files).forEach(file => {
+          formData.append('files', file);
+        });
+
+        uploadProgress.style.display = 'block';
+        progressText.textContent = 'ファイルをアップロードしています...';
+        progressFill.style.width = '0%';
+        progressPercentage.textContent = '0%';
+
+        try {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', '/api/upload', true);
+
+          xhr.upload.onprogress = e => {
+            if (e.lengthComputable) {
+              const percentComplete = (e.loaded / e.total) * 100;
+              progressFill.style.width = percentComplete + '%';
+              progressPercentage.textContent = Math.round(percentComplete) + '%';
+            }
+          };
+
+          xhr.onload = function () {
+            if (xhr.status === 200) {
+              const response = JSON.parse(xhr.responseText);
+              progressText.textContent = 'アップロード完了！';
+              progressFill.style.width = '100%';
+              progressPercentage.textContent = '100%';
+
+              displayUploadedFiles(response.files);
+
+              setTimeout(() => {
+                uploadProgress.style.display = 'none';
+              }, 3000);
+            } else {
+              progressText.textContent = 'アップロードに失敗しました';
+              progressFill.style.backgroundColor = 'var(--danger-color)';
+            }
+          };
+
+          xhr.onerror = function () {
+            progressText.textContent = 'アップロードに失敗しました';
+            progressFill.style.backgroundColor = 'var(--danger-color)';
+          };
+
+          xhr.send(formData);
+        } catch (error) {
+          console.error('アップロードエラー:', error);
+          progressText.textContent = 'アップロードに失敗しました';
+          progressFill.style.backgroundColor = 'var(--danger-color)';
+        }
+      }
+
+      function displayUploadedFiles(files) {
+        uploadedFiles.style.display = 'block';
+
+        const fileElements = files
+          .map(
+            file => `
+                <div class="file-item">
+                    <div class="file-icon">
+                        <span class="material-icons">description</span>
+                    </div>
+                    <div class="file-info">
+                        <h4 class="file-name" onclick="showFileNamePopup('${
+                          file.originalName
+                        }')" title="タップしてファイル名を表示">${truncateFileName(
+              file.originalName
+            )}</h4>
+                        <p class="file-size">${formatFileSize(file.size)}</p>
+                    </div>
+                    <div class="file-actions">
+                        <a href="${file.url}" class="action-btn" target="_blank" title="プレビュー">
+                            <span class="material-icons">visibility</span>
+                        </a>
+                        <a href="${file.url}" class="action-btn" download title="ダウンロード">
+                            <span class="material-icons">download</span>
+                        </a>
+                    </div>
+                </div>
+            `
+          )
+          .join('');
+
+        fileList.innerHTML = fileElements + fileList.innerHTML;
+      }
+
+      function truncateFileName(fileName) {
+        if (fileName.length <= 20) return fileName;
+        return fileName.substring(0, 17) + '...';
+      }
+
+      function formatFileSize(bytes) {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+      }
+
+      function toggleMobileMenu() {
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenu.classList.toggle('active');
+      }
+
+      document.addEventListener('click', e => {
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+
+        if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+          mobileMenu.classList.remove('active');
+        }
+      });
+
+      fileNamePopup.addEventListener('click', e => {
+        if (e.target === fileNamePopup) {
+          closeFileNamePopup();
+        }
+      });
+
+      initTheme();
+    </script>
+  </body>
+</html>
