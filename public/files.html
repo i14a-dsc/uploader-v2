@@ -177,14 +177,6 @@
       let currentTheme = 'auto';
       let currentFile = null;
 
-      // File extension arrays for icon mapping
-      const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'ico', 'tiff', 'tif'];
-      const docExts = ['doc', 'docx', 'odt', 'rtf', 'tex', 'wpd', 'odp', 'pps', 'ppt', 'pptx'];
-      const sheetExts = ['xls', 'xlsx', 'ods', 'csv', 'tsv'];
-      const archiveExts = ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz', 'iso', 'dmg'];
-      const codeExts = ['js', 'jsx', 'ts', 'tsx', 'html', 'css', 'scss', 'less', 'json', 'xml', 'yaml', 'yml', 'php', 'py', 'rb', 'java', 'c', 'cpp', 'cs', 'go', 'rs', 'swift', 'kt'];
-      const sourceCodeExts = ['c', 'h', 'cpp', 'hpp', 'cxx', 'hxx', 'm', 'mm', 'swift', 'kt', 'java', 'py', 'rb', 'go', 'rs', 'php', 'sh', 'bash', 'zsh', 'fish', 'ps1', 'bat', 'cmd'];
-
       function initTheme() {
         const savedTheme = localStorage.getItem('theme') || 'auto';
         setTheme(savedTheme);
@@ -232,6 +224,10 @@
 
       function closeFileNamePopup() {
         fileNamePopup.classList.remove('show');
+        const actionButton = document.querySelector('#fileNamePopup .popup-actions .btn-confirm');
+        if (actionButton) {
+          actionButton.disabled = false;
+        }
       }
 
       function showRenamePopup(file) {
@@ -243,6 +239,10 @@
       function closeRenamePopup() {
         renamePopup.classList.remove('show');
         currentFile = null;
+        const actionButton = document.querySelector('#renamePopup .popup-actions .btn-confirm');
+        if (actionButton) {
+          actionButton.disabled = false;
+        }
       }
 
       function showSharePopup(file) {
@@ -253,6 +253,10 @@
 
       function closeSharePopup() {
         sharePopup.classList.remove('show');
+        const actionButton = document.querySelector('#sharePopup .popup-actions .btn-confirm');
+        if (actionButton) {
+          actionButton.disabled = false;
+        }
       }
 
       function showToast(message, type = 'success') {
@@ -291,7 +295,6 @@
           'xcf',
           'kra',
           'clip',
-          'cpt',
           'procreate',
           'ase',
           'aseprite',
@@ -308,7 +311,6 @@
           'md',
           'pages',
           'key',
-          'numbers',
           'epub',
           'mobi',
           'azw',
@@ -345,7 +347,6 @@
           'xla',
           'xll',
           'xlw',
-          'numbers',
           'gnumeric',
         ];
 
@@ -387,6 +388,7 @@
         ];
 
         const archiveExts = [
+          'zst',
           'zip',
           'rar',
           '7z',
@@ -394,7 +396,6 @@
           'gz',
           'bz2',
           'xz',
-          'zst',
           'lzma',
           'lz4',
           'iso',
@@ -409,7 +410,6 @@
           'lzo',
           'rz',
           'sz',
-          'uc2',
           'zoo',
           'zipx',
           'ace',
@@ -419,13 +419,10 @@
           'b6z',
           'ba',
           'bh',
-          'cab',
           'car',
-          'cpt',
           'dar',
           'dd',
           'dgc',
-          'dmg',
           'ear',
           'gca',
           'ha',
@@ -433,10 +430,6 @@
           'ice',
           'kgb',
           'lbr',
-          'lz4',
-          'lzh',
-          'lzma',
-          'lzo',
           'pak',
           'partimg',
           'pea',
@@ -458,17 +451,15 @@
           'tlz',
           'txz',
           'tz',
-          'uc2',
           'war',
           'wim',
           'xar',
           'z',
-          'zoo',
           'zpaq',
           'zz',
         ];
 
-        const sourceCodeExts = [
+        const codeExts = [
           'py',
           'pyw',
           'pyi',
@@ -478,14 +469,14 @@
           'pyt',
           'pyz',
           'pyzw',
+
           'java',
           'class',
           'jmod',
           'jsp',
           'jspx',
           'jspf',
-          'jspx',
-          'jspf',
+
           'c',
           'h',
           'i',
@@ -508,6 +499,7 @@
           'props',
           'targets',
           'csproj.user',
+
           'php',
           'phtml',
           'php3',
@@ -516,6 +508,7 @@
           'php7',
           'phps',
           'phpt',
+
           'rb',
           'rbw',
           'rake',
@@ -535,13 +528,11 @@
           'rs',
           'rlib',
           'rs.in',
-          'swift',
           'swiftmodule',
           'swiftdoc',
           'swiftsourceinfo',
           'swiftinterface',
           'kt',
-          'kts',
           'ktm',
           'kts.sed',
           'dart',
@@ -549,7 +540,6 @@
           'sh',
           'bash',
           'zsh',
-          'csh',
           'tcsh',
           'ksh',
           'fish',
@@ -559,19 +549,14 @@
           'ps1xml',
           'psc1',
           'psd1',
-          'psm1',
           'pssc',
           'cdxml',
-          'psc1',
           'js',
           'jsx',
           'mjs',
           'cjs',
           'es6',
-          'es',
           'jsm',
-          'mjs',
-          'cjs',
           'pac',
           'ts',
           'tsx',
@@ -583,32 +568,20 @@
           'm',
           'mm',
           'M',
-          'h',
-          'hh',
           'scala',
           'sc',
-          'sbt',
-          'scala.sbt',
-          'sc',
-          'sbt',
           'scala.sbt',
           'groovy',
           'gvy',
-          'gradle',
           'gradle.kts',
           'gradle.properties',
           'pl',
           'pm',
-          't',
-          'pod',
           'ph',
           'plx',
           'al',
           'perl',
-          'pod',
           'psgi',
-          'r',
-          'rdata',
           'rds',
           'rda',
           'rproj',
@@ -617,8 +590,6 @@
           'rprofile',
           'lua',
           'rockspec',
-          'tcl',
-          'tbc',
           'tm',
           'tclshrc',
           'tclshrc.tcl',
@@ -627,18 +598,10 @@
           'ddl',
           'dml',
           'pks',
-          'pkb',
-          'pck',
-          'pks',
-          'pkb',
-          'pck',
           'asm',
           's',
-          'S',
           'sx',
           'inc',
-          'i',
-          'ii',
           'v',
           'vh',
           'vhd',
@@ -650,6 +613,8 @@
           'vinc',
           'vp',
           'vst',
+          'vsproj',
+          'vssscc',
           'coffee',
           'litcoffee',
           'coffee.md',
@@ -657,21 +622,14 @@
           'iced',
           'pde',
           'ino',
-          'h',
-          'cpp',
-          'c',
-          'hpp',
-          'cxx',
-          'hxx',
-          's',
-          'S',
-          'asm',
           'nix',
           'nixos',
           'nix.in',
           'nixpkgs',
           'nixpkg',
           'nix-expr',
+          'ninja',
+          'ninja-build',
           'rkt',
           'rktl',
           'rktd',
@@ -785,14 +743,36 @@
           'purs.~.purs.~',
         ];
 
-        if (
-          filenameLower.endsWith('.tar.gz') ||
-          filenameLower.endsWith('.tar.zst') ||
-          filenameLower.endsWith('.tar.xz') ||
-          filenameLower.endsWith('.tar.bz2')
-        ) {
-          return 'archive';
-        }
+        const gameExts = [
+          'mcpack',
+          'mcworld',
+          'mctemplate',
+          'mcstructure',
+          'mcaddon',
+          'mcfunction',
+          'mcmeta',
+          'mcr',
+          'mca',
+          'mcapm',
+          'osk',
+          'osz',
+          'osr',
+          'rom',
+          'sav',
+          'gma',
+          'litemod',
+          'schem',
+          'schematic',
+          'nbs',
+          'info',
+          'rpgproject',
+          'dat_new',
+          'wbox',
+          'player',
+          'world',
+          'plr',
+          'wld',
+        ];
 
         if (filenameLower.endsWith('.desktop') || filenameLower.endsWith('.appref-ms')) {
           return 'launch';
@@ -812,17 +792,23 @@
         if (sheetExts.includes(ext)) return 'grid_on';
         if (ext === 'pdf') return 'picture_as_pdf';
         if (archiveExts.includes(ext)) return 'archive';
-        if (codeExts.includes(ext) || sourceCodeExts.includes(ext)) return 'code';
-        if (ext === 'txt' || ext === 'log' || ext === 'conf' || ext === 'ini' || ext === 'cfg')
+        if (codeExts.includes(ext)) return 'code';
+        if (gameExts.includes(ext)) return 'sports_esports';
+
+        if (['txt', 'log', 'conf', 'ini', 'cfg', 'yaml', 'yml', 'toml', 'json'].includes(ext)) {
           return 'text_snippet';
+        }
+
         if (['mp3', 'wav', 'ogg', 'flac', 'aac', 'wma', 'm4a'].includes(ext)) return 'audiotrack';
-        if (['mp4', 'webm', 'mov', 'avi', 'mkv', 'wmv', 'flv', 'm4v', 'mpeg', 'mpg'].includes(ext))
+        if (
+          ['mp4', 'webm', 'mov', 'avi', 'mkv', 'wmv', 'flv', 'm4v', 'mpeg', 'mpg'].includes(ext)
+        ) {
           return 'videocam';
-        if (ext === 'epub' || ext === 'mobi' || ext === 'azw3') return 'menu_book';
-        if (ext === 'ttf' || ext === 'otf' || ext === 'woff' || ext === 'woff2')
-          return 'font_download';
-        if (ext === 'db' || ext === 'sqlite' || ext === 'sqlite3' || ext === 'db3')
-          return 'storage';
+        }
+
+        if (['epub', 'mobi', 'azw3'].includes(ext)) return 'menu_book';
+        if (['ttf', 'otf', 'woff', 'woff2', 'eot'].includes(ext)) return 'font_download';
+        if (['db', 'sqlite', 'sqlite3', 'db3', 'sqlitedb'].includes(ext)) return 'storage';
 
         return 'insert_drive_file';
       }
@@ -975,12 +961,23 @@
 
       function closeDeletePopup() {
         document.getElementById('deletePopup').classList.remove('show');
+        const deleteButton = document.querySelector('#deletePopup .btn-confirm');
+        if (deleteButton) {
+          deleteButton.disabled = false;
+        }
       }
 
       async function confirmDelete() {
         if (!currentFile) return;
 
+        const deleteButton = document.querySelector('#deletePopup .btn-confirm');
+        if (deleteButton) {
+          deleteButton.disabled = true;
+        }
+
         try {
+          closeDeletePopup();
+
           const response = await fetch(
             `/api/files/${encodeURIComponent(currentFile.originalName)}`,
             {
@@ -998,7 +995,6 @@
           console.error('削除エラー:', error);
           showToast('ファイルの削除に失敗しました', 'error');
         }
-        closeDeletePopup();
       }
 
       async function copyShareUrl() {
